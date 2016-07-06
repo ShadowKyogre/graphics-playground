@@ -1,0 +1,7 @@
+= Sources
+
+Rainbow Ring::
+	Cairo:::
+		Handwritten Port of HTML5
+	HTML5:::
+		http://stackoverflow.com/questions/22223950/angle-gradient-in-canvas

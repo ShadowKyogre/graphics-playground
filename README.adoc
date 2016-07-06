@@ -1,0 +1,18 @@
+= Graphics Playground
+
+You're probably wondering,
+"What the heck IS this!"
+
+They're some tools that I wrote in case
+I get the itch to write random graphics code.
+
+live-playground::
+	Tools to play with live code samples
+	before integrating examples into your javascript or
+	cairo project.
+	+
+	Warning: These are NOT written with security in mind.
+	They assume you know what you're doing.
+
+examples::
+	Label says it all.
