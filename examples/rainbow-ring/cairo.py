@@ -1,40 +1,49 @@
-def rainbow_ring(ctxt, cx, cy, cr, sw, colors):
-	len_colors = len(colors)
 
-	part_arc = (2 * math.pi) / len_colors
+def rainbow_ring(ctxt, cx, cy, cr, sw, colors, fine_tune=39):
+	len_colors = len(colors)
+	full_circle = 2 * math.pi
+
+	part_arc = (full_circle) / len_colors
+	fine_tune_arc = part_arc / fine_tune
 	gradient = None
 	start_color, end_color = None, None
 
-	ctxt.set_line_width(sw)
+	def blend_colors(s1, s2, blend_factor):
+		for c1, c2 in zip(s1, s2):
+			yield math.sqrt((1- blend_factor)* c1**2 + blend_factor*c2**2)
+			#sqrt(R1^2*w + R2^2*[1 - w])
 
 	for i, color in enumerate(colors):
 		start_color = color
 		end_color = colors[ (i + 1) % len_colors]
 
 		start_arc = part_arc * i
-		end_arc   = part_arc * (i + 1)
+		end_arc   = start_arc + fine_tune_arc
 
-		x1 = cx + math.cos(start_arc) * cr
-		x2 = cx + math.cos(end_arc) * cr
+		for j in range(0, fine_tune+1):
+			color = tuple(blend_colors(start_color, end_color, j / fine_tune))
 
-		y1 = cy + math.sin(start_arc) * cr
-		y2 = cy + math.sin(end_arc) * cr
+			ctxt.arc(cx, cy, cr - sw / 2, start_arc, end_arc)
+			ctxt.arc_negative(cx, cy, cr + sw / 2, end_arc, start_arc)
 
-		ctxt.arc(cx, cy, cr, start_arc, end_arc)
-		gradient = cairo.LinearGradient(x1, y1, x2, y2)
-		gradient.add_color_stop_rgba(0, *start_color)
-		gradient.add_color_stop_rgba(1, *end_color)
 
-		ctxt.set_source(gradient)
-		ctxt.stroke()
+			ctxt.set_source_rgba(*color)
+			ctxt.close_path()
+
+			ctxt.fill_preserve()
+			ctxt.set_line_width(1)
+			ctxt.stroke()
+
+			start_arc += fine_tune_arc
+			end_arc += fine_tune_arc
 
 colors = [
 	(1, 1, 0, 1),
 	(0, 1, 1, 1),
 	(1, 0, 1, 1),
 ]
-sw = 30
-shadow_w = 10
+sw = 30.0
+shadow_w = 10.0
 cr = shortest_dim / 2 - sw / 2
 
 shadow = ctxt.arc(size.width / 2, size.height / 2, cr - shadow_w / 2, 0, 2 * math.pi)
