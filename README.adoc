@@ -12,7 +12,16 @@ live-playground::
 	cairo project.
 	+
 	Warning: These are NOT written with security in mind.
-	They assume you know what you're doing.
+	They assume you know what you're doing since they're meant to
+	test code snippets.
+	+
+	There's probably a way to play with OpenGL model code snippets too.
+	Just haven't figured it out yet.
 
 examples::
 	Label says it all.
+	The folder structure is as such:
+		* name
+			* html5-canvas.js
+			* cairo.py
+			* qt.py
