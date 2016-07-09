@@ -7,6 +7,8 @@ import math
 
 import sys
 
+import gfx_utils
+
 class CairoPlayground(Gtk.DrawingArea):
 	def __init__(self, code):
 		super().__init__()

@@ -4,6 +4,8 @@ import math
 
 import sys
 
+import gfx_utils
+
 class QtPlayground(QtWidgets.QWidget):
 	def __init__(self, code):
 		super().__init__()

@@ -1,4 +1,3 @@
-
 def rainbow_ring(ctxt, cx, cy, cr, sw, colors, fine_tune=39):
 	len_colors = len(colors)
 	full_circle = 2 * math.pi
@@ -8,11 +7,6 @@ def rainbow_ring(ctxt, cx, cy, cr, sw, colors, fine_tune=39):
 	gradient = None
 	start_color, end_color = None, None
 
-	def blend_colors(s1, s2, blend_factor):
-		for c1, c2 in zip(s1, s2):
-			yield math.sqrt((1- blend_factor)* c1**2 + blend_factor*c2**2)
-			#sqrt(R1^2*w + R2^2*[1 - w])
-
 	for i, color in enumerate(colors):
 		start_color = color
 		end_color = colors[ (i + 1) % len_colors]
@@ -21,11 +15,10 @@ def rainbow_ring(ctxt, cx, cy, cr, sw, colors, fine_tune=39):
 		end_arc   = start_arc + fine_tune_arc
 
 		for j in range(0, fine_tune+1):
-			color = tuple(blend_colors(start_color, end_color, j / fine_tune))
+			color = tuple(gfx_utils.blend_colors(start_color, end_color, j / fine_tune))
 
 			ctxt.arc(cx, cy, cr - sw / 2, start_arc, end_arc)
 			ctxt.arc_negative(cx, cy, cr + sw / 2, end_arc, start_arc)
-
 
 			ctxt.set_source_rgba(*color)
 			ctxt.close_path()

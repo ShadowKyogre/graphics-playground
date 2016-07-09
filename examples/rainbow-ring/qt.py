@@ -34,14 +34,6 @@ slice_width = 360 / len_colors
 fine_tune = 39
 fine_tune_slice = slice_width / fine_tune
 
-def blend_colors(s1, s2, blend_factor):
-	return QtGui.QColor(
-		math.sqrt((1- blend_factor)* s1.red()**2 + blend_factor*s2.red()**2),
-		math.sqrt((1- blend_factor)* s1.green()**2 + blend_factor*s2.green()**2),
-		math.sqrt((1- blend_factor)* s1.blue()**2 + blend_factor*s2.blue()**2)
-	)
-
-
 shadow_w = 10
 shadowPen = QtGui.QPen(QtGui.QColor(0, 0, 0, 255 * 0.2))
 shadowPen.setWidth(innerDiamOffset + shadow_w)
@@ -54,8 +46,10 @@ painter.setPen(shadowPen)
 painter.drawArc(shadowRect, 0, 360*16)
 
 for i in range(len_colors):
-	start_color = colors[i]
-	end_color   = colors[(i + 1) % len_colors]
+	start_qcol = colors[i]
+	end_qcol   = colors[(i + 1) % len_colors]
+	start_color = (start_qcol.red(), start_qcol.green(), start_qcol.blue(), start_qcol.alpha())
+	end_color   = (end_qcol.red(), end_qcol.green(), end_qcol.blue(), end_qcol.alpha())
 
 	start_angle = i * slice_width
 	end_angle   = start_angle + fine_tune_slice
@@ -70,7 +64,7 @@ for i in range(len_colors):
 		path.arcTo(innerPieRect, end_angle, -fine_tune_slice)
 		path.closeSubpath()
 
-		color = blend_colors(start_color, end_color, j / fine_tune)
+		color = QtGui.QColor(*gfx_utils.blend_colors(start_color, end_color, j / fine_tune))
 
 		painter.fillPath(path, color)
 		painter.strokePath(path, color)
