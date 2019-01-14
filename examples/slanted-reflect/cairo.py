@@ -48,7 +48,7 @@ def angled_guide(ctxt, cx, cy, length, angle, color):
 
 axis_angle = 108
 cx = size.width / 2
-cy = size.height * 0
+cy = size.height / 2
 
 angled_guide(
     ctxt,
@@ -56,7 +56,7 @@ angled_guide(
     cy,
     max(size.width, size.height),
     2 * math.pi * axis_angle / 360,
-    (0, 0, 0, 1)
+    (1, 0, 1, 1)
 )
 
 angled_guide(
