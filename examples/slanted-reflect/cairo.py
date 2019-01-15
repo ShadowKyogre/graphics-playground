@@ -37,7 +37,7 @@ def draw_dab(ctxt, angle, x, y, color):
   ctxt.restore()
 
 def angled_guide(ctxt, cx, cy, length, angle, color):
-    print(180 / math.pi * angle)
+    print(math.degrees(angle))
     ctxt.move_to(cx, cy) 
     ctxt.line_to(
         length * math.cos(angle) + cx,
@@ -46,16 +46,38 @@ def angled_guide(ctxt, cx, cy, length, angle, color):
     ctxt.set_source_rgba(*color)
     ctxt.stroke()
 
-axis_angle = 108
+axis_angle = 108+120
 cx = size.width / 2
 cy = size.height / 2
+
+# Visual aid
 
 angled_guide(
     ctxt,
     cx,
     cy,
     max(size.width, size.height),
-    2 * math.pi * axis_angle / 360,
+    math.radians(90),
+    (0, 0.5, 0.5, 1)
+)
+
+angled_guide(
+    ctxt,
+    cx,
+    cy,
+    max(size.width, size.height),
+    math.radians(0),
+    (0, 0.5, 0.5, 1)
+)
+
+# Draw slanted reflect
+
+angled_guide(
+    ctxt,
+    cx,
+    cy,
+    max(size.width, size.height),
+    math.radians(axis_angle),
     (1, 0, 1, 1)
 )
 
@@ -64,20 +86,40 @@ angled_guide(
     cx,
     cy,
     max(size.width, size.height),
-    2 * math.pi * 90 / 360,
-    (0, 0, 1, 1)
+    math.radians(axis_angle + 180),
+    (1, 0, 1, 0.5)
 )
 
-dab_angle = 0
+# dab
+
+dab_angle = 75
 x = size.width * 0.8
 y = size.height * 0.5
 
 draw_dab(
   ctxt,
-  dab_angle,
+  math.radians(dab_angle),
   x,
   y,
   (0, 0, 1, 0.8)
+)
+
+angled_guide(
+    ctxt,
+    x,
+    y,
+    max(size.width, size.height),
+    math.radians(axis_angle+270),
+    (0, 0, 0, 0.5)
+)
+
+angled_guide(
+    ctxt,
+    x,
+    y,
+    max(size.width, size.height),
+    math.radians(90+dab_angle),
+    (0, 0, 1, 0.5)
 )
 
 #get the angle of the axis
@@ -88,23 +130,27 @@ draw_dab(
 
 #get the distance between point and center
 distance = math.sqrt((x-cx)**2+(y-cy)**2)
-point_angle = math.atan2(y-cy, x-cx) * 180 / math.pi
+point_angle = math.degrees(math.atan2(y-cy, x-cx))
 
 #flip the angle of point
 new_point_angle = -(point_angle - axis_angle) + axis_angle
 
-#add the dab angle and axis angle
-#also add 90 to adjust for perpendicular
-new_dab_angle = -(dab_angle - axis_angle - 90) + (axis_angle + 90)
-
-print("P1::", point_angle, dab_angle)
-print("P2::", new_point_angle, new_dab_angle)
-
+#add the dab angle and new point angle
 # place the dab
 draw_dab(
   ctxt,
-  new_dab_angle * 2 * math.pi / 360,
-  distance * math.cos(new_point_angle * 2 * math.pi / 360) + cx,
-  distance * math.sin(new_point_angle * 2 * math.pi / 360) + cy,
+  math.radians(new_point_angle - (180 + dab_angle)),
+  distance * math.cos(math.radians(new_point_angle)) + cx,
+  distance * math.sin(math.radians(new_point_angle)) + cy,
   (1, 0, 0, 0.8)
+)
+
+# place angled guide perpendicular to dab center
+angled_guide(
+    ctxt,
+    distance * math.cos(math.radians(new_point_angle)) + cx,
+    distance * math.sin(math.radians(new_point_angle)) + cy,
+    max(size.width, size.height),
+    math.radians(new_point_angle - (90 + dab_angle)),
+    (1, 0, 0, 0.5)
 )
