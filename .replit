@@ -1,0 +1,4 @@
+run = "python live-playground/cairo-playpen.py examples/rainbow-ring/cairo.py"
+
+[nix]
+channel = "stable-21_11"
